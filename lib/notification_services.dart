@@ -66,26 +66,64 @@ class NotificationServices {
   }
 
   Future<void> showNotification(RemoteMessage message) async {
-    int notificationId = Random.secure().nextInt(10000);
-
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'high_importance_channel', // Channel ID (must remain constant)
-      'High Importance Notifications',
+    AndroidNotificationChannel channel = AndroidNotificationChannel(
+      Random.secure().nextInt(10000).toString(),
+      'High Importabce Notification',
       importance: Importance.max,
-      priority: Priority.high,
     );
-
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-
-    await _flutterLocalNotificationsPlugin.show(
-      notificationId,
-      message.notification?.title ?? 'No Title',
-      message.notification?.body ?? 'No Body',
-      notificationDetails,
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      channel.id.toString(),
+      channel.name.toString(),
+      channelDescription: 'your channel description',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+    DarwinNotificationDetails darwinNotificationDetails =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: darwinNotificationDetails,
+    );
+    Future.delayed(
+      Duration.zero,
+      () {
+        _flutterLocalNotificationsPlugin.show(
+          0,
+          message.notification!.title.toString(),
+          message.notification!.body.toString(),
+          notificationDetails,
+        );
+      },
     );
   }
+
+  // Future<void> showNotification(RemoteMessage message) async {
+  //   int notificationId = Random.secure().nextInt(10000);
+
+  //   const AndroidNotificationDetails androidNotificationDetails =
+  //       AndroidNotificationDetails(
+  //     'high_importance_channel', // Channel ID (must remain constant)
+  //     'High Importance Notifications',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //   );
+
+  //   const NotificationDetails notificationDetails =
+  //       NotificationDetails(android: androidNotificationDetails);
+
+  //   await _flutterLocalNotificationsPlugin.show(
+  //     notificationId,
+  //     message.notification?.title ?? 'No Title',
+  //     message.notification?.body ?? 'No Body',
+  //     notificationDetails,
+  //   );
+  // }
 
   Future<String> getDeviceToken() async {
     String? getToken = await firebaseMessaging.getToken();
