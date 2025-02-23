@@ -57,8 +57,12 @@ class NotificationServices {
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
-        print("Notification Received: ${message.notification?.title}");
-        print("Notification Body: ${message.notification?.body}");
+        print(
+            "Notification Received: ${message.notification?.title.toString()}");
+        print("Notification Body: ${message.notification?.body.toString()}");
+        print(message.data.toString());
+        print(message.data['type'].toString());
+        print(message.data['id'].toString());
       }
 
       showNotification(message);
@@ -135,4 +139,6 @@ class NotificationServices {
       print('New Token: $newToken');
     });
   }
+
+  void handleMessage(BuildContext context, RemoteMessage message) {}
 }
